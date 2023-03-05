@@ -1,5 +1,7 @@
 const express = require("express");
+const { connect } = require("../data/db");
 const router = express.Router();
+const db = require("../data/db");
 
 const data = {
     title: "Popüler Kurslar",
@@ -45,11 +47,29 @@ router.use("/blogs/:blogid", function(req, res) {
 });
 
 router.use("/blogs", function(req, res) {
-    res.render("users/blogs", data);
+    db.execute("select * from blog")
+        .then(result => {
+            res.render("users/blogs", {
+                title      :"Tüm Kurslar",
+                blogs      : result[0],
+                categories :data.categories
+            });
+        })
+        .catch(err => console.log(err));
 });
 
 router.use("/", function(req, res) {
-    res.render("users/index", data);
+    db.execute("select * from blog")
+        .then(result => {
+            res.render("users/index", {
+                title      :"Populer Kurslar",
+                blogs      : result[0],
+                categories :data.categories
+            });
+        })
+        .catch(err => console.log(err));
+
+    
 });
 
 module.exports = router;

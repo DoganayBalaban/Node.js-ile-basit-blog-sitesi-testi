@@ -3,7 +3,8 @@ const app = express();
 
 const path = require("path");
 const userRoutes = require("./routes/user");
-const adminRoutes = require("./routes/admin")
+const adminRoutes = require("./routes/admin");
+
 
 app.set("view engine","ejs");
 
