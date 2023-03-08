@@ -42,34 +42,74 @@ const data = {
     ]
 }
 
-router.use("/blogs/:blogid", function(req, res) {
-    res.render("users/blog-details");
-});
+router.use("/blogs/category/:categoryid",async function(req, res){
+    const id = req.params.categoryid;
+    try{
+        const [blogs,] = await db.execute("select * from blog where categoryid =?",[id])
+        const [categories,] = await db.execute("select * from category")
+        res.render("users/blogs", {
+            title      : "Tüm Kurslar",
+            blogs      : blogs,
+            categories : categories,
+            selectedCategory:id
+        });
+    }
+    catch(err){
+        console.log(err)
+    }
+})
 
-router.use("/blogs", function(req, res) {
-    db.execute("select * from blog")
-        .then(result => {
-            res.render("users/blogs", {
-                title      :"Tüm Kurslar",
-                blogs      : result[0],
-                categories :data.categories
+router.use("/blogs/:blogid", async function(req, res) {
+    const id = req.params.blogid;
+    try{
+        const [blogs,] = await db.execute("select * from blog where blogid =?",[id])
+        if(blog[0]){
+            return res.render("users/blog-details",{
+                title:blogs[0].baslik,
+                blog: blogs[0]
             });
-        })
-        .catch(err => console.log(err));
-});
+        }
+        res.redirect("/");
+    }
+    catch(err){
+        console.log(err);
+    }
 
-router.use("/", function(req, res) {
-    db.execute("select * from blog")
-        .then(result => {
-            res.render("users/index", {
-                title      :"Populer Kurslar",
-                blogs      : result[0],
-                categories :data.categories
-            });
-        })
-        .catch(err => console.log(err));
 
     
+});
+
+router.use("/blogs", async function(req, res) {
+    try{
+        const [blogs,] = await db.execute("select * from blog where onay = 1")
+        const [categories,] = await db.execute("select * from category")
+        res.render("users/blogs", {
+            title      : "Tüm Kurslar",
+            blogs      : blogs,
+            categories : categories,
+            selectedCategory:null
+        });
+    }
+    catch(err){
+        console.log(err)
+    }
+});
+
+router.use("/",  async function(req, res) {
+    try{
+        const [blogs,] = await db.execute("select * from blog where onay = 1 and anasayfa = 1")
+        const [categories,] = await db.execute("select * from category")
+        res.render("users/index", {
+            title      : "Popüler Kurslar",
+            blogs      : blogs,
+            categories : categories,
+            selectedCategory:null
+
+        });
+    }
+    catch(err){
+        console.log(err)
+    }
 });
 
 module.exports = router;
