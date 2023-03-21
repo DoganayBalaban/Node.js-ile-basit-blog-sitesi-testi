@@ -10,6 +10,15 @@
     <div class="container mt-3">
         <div class="row">
             <div class="col-md-12 mt-3">
+                <% if (action != "undefined" && action=="edit") { %>
+                    <div class="alert alert-success"><%= blogid %> id numaralı blog güncellendi.</div>
+                <% } %>
+                <% if (action != "undefined" && action=="create") { %>
+                    <div class="alert alert-success">Blog Oluşturuldu.</div>
+                <% } %>
+                <% if (action != "undefined" && action=="delete") { %>
+                    <div class="alert alert-success">Blog Silindi.</div>
+                <% } %>
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
